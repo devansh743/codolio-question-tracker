@@ -9,32 +9,36 @@ function App() {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Requirement: API Integration
-        const res = await axios.get('https://node.codolio.com/api/question-tracker/v1/sheet/public/get-sheet-by-slug/striver-sde-sheet');
-        
-        // Deep access to the sections array
-        const sections = res.data?.data?.sections;
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get('https://node.codolio.com/api/question-tracker/v1/sheet/public/get-sheet-by-slug/striver-sde-sheet');
+      const sections = res.data?.data?.sections || [];
+      
+      const formatted = sections.map(s => ({
+        id: s._id || Math.random().toString(36).substr(2, 9),
+        title: s.title,
+        questions: s.questions || []
+      }));
+      
+      setTopics(formatted);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        if (sections && Array.isArray(sections)) {
-          const formatted = sections.map(s => ({
-            id: s._id || Math.random().toString(),
-            title: s.title,
-            questions: s.questions || []
-          }));
-          setTopics(formatted);
-        }
-      } catch (err) { 
-        console.error("API Error:", err); 
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // THE KEY CHANGE: If there are no questions at all, force a fetch
+  const totalQuestions = topics.reduce((acc, topic) => acc + topic.questions.length, 0);
   
+  if (totalQuestions === 0) {
+    fetchData();
+  } else {
+    setLoading(false);
+  }
+}, []);
+
   const onDragEnd = (result) => {
     if (!result.destination) return;
     reorder(result.source.index, result.destination.index);
@@ -71,7 +75,7 @@ useEffect(() => {
                       <div 
                         ref={provided.innerRef} 
                         {...provided.draggableProps} 
-                        className={`bg-[#161b2a] border ${snapshot.isDragging ? 'border-blue-500' : 'border-slate-800'} rounded-xl overflow-hidden shadow-2xl transition-colors`}
+                        className={`bg-[#161b2a] border ${snapshot.isDragging ? 'border-blue-500 shadow-blue-900/40' : 'border-slate-800'} rounded-xl overflow-hidden shadow-2xl transition-all`}
                       >
                         <div className="p-4 flex items-center justify-between bg-[#1c2333]">
                           <div className="flex items-center gap-4">
@@ -92,7 +96,7 @@ useEffect(() => {
                         </div>
                         
                         <div className="p-4 space-y-2 bg-[#0b0f1a]">
-                          {topic.questions.length > 0 ? (
+                          {topic.questions && topic.questions.length > 0 ? (
                             topic.questions.map((q, i) => (
                               <div key={`${topic.id}-q-${i}`} className="flex justify-between items-center p-3 rounded-lg border border-slate-800 bg-[#161b2a] hover:border-slate-600 transition-all group">
                                 <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{q.title}</span>
