@@ -1,20 +1,14 @@
-# Codolio Question Tracker - Internship Assignment
+# Question Management Sheet - Codolio Assignment
 
-An interactive, drag-and-drop question management sheet built with React and Zustand.
-
-## Tech Stack
-- **Frontend**: React (Vite)
-- **State Management**: Zustand (with Persistence)
-- **Styling**: Tailwind CSS v4
-- **Interactivity**: @hello-pangea/dnd (Drag and Drop)
-- **Icons**: Lucide-react
+A high-performance interactive dashboard for managing study topics and questions.
 
 ## Features
-- **Hierarchical Management**: Organize questions into draggable topics.
-- **CRUD Operations**: Add, edit, or delete topics and questions.
-- **API Integration**: Initial state hydrated from Codolio's public API.
-- **Persistence**: Your reordered list is saved locally (Bonus Feature).
+- **Drag & Drop**: Reorder topics instantly using `@hello-pangea/dnd`.
+- **Global State**: Managed via **Zustand** for clean, scalable data flow.
+- **Dynamic Hydration**: Data fetched from the Codolio public API.
+- **Modern UI**: Built with **Tailwind CSS v4** for a sleek dark-mode experience.
 
-## How to Run
-1. `npm install`
-2. `npm run dev`
+## Setup Instructions
+1. Clone the repo.
+2. Run `npm install`.
+3. Start the development server with `npm run dev`.
